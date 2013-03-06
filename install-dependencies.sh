@@ -15,11 +15,13 @@ sudo apt-get build-dep chromium-browser -y
 # depot_tools
 if [ "$(which gclient)" = "" ]; then
 	echo "Installing Google Depot Tools..."
-  cd /usr/local/bin/
-	git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
+  if [ ! -d "depot_tools" ]; then
+    git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
+  fi
   cd depot_tools
-  echo "export DEPOT_TOOLS=${pwd}" >> ~/.bash_profile
-  echo "PATH=\$PATH:${DEPOT_TOOLS}" >> ~/.bash_profile
+  echo "export DEPOT_TOOLS=$(pwd)" >> ~/.bash_profile
+  echo "PATH=\$PATH:\${DEPOT_TOOLS}" >> ~/.bash_profile
+  source ~/.bash_profile
 fi
 
 # setup node-webkit

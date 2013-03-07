@@ -2,9 +2,9 @@
 set -o nounset
 set -o errexit
 
-NODEWEBKIT=$(pwd)/node-webkit
+NODEWEBKIT="$(pwd)/node-webkit"
 
-build() {
+config() {
 
 	if [ ! -d "${NODEWEBKIT}" ]; then
 		echo "Could not find the node-webkit source directory!"
@@ -23,7 +23,7 @@ build() {
 		exit 1
 	fi
 
-	readonly SYSROOT=$(pwd)/node-webkit/src/arm-sysroot
+	readonly SYSROOT="${NODEWEBKIT}/src/arm-sysroot/"
 	if [ ! -d ${SYSROOT} ]; then
 		echo "The arm sysroot could not be found!"
 		exit 1
@@ -44,37 +44,37 @@ build() {
 	export GYP_DEFINES
 
 	gclient runhooks
-	make-chrome
 }
 
-make-chrome() {
+# build without NACL support
+make-nodewebkit() {
+	cd ${NODEWEBKIT}/src/
 	set -x
 	make BUILDTYPE=Release -j ${PARALLELISM} nw $*
 }
 
+# build with NACL support
 make-nacl() {
+	cd ${NODEWEBKIT}/src/
+	set -x
 	make-chrome nacl_helper nacl_helper_bootstrap $*
 }
 
 package() {
-  local OUT=${GYP_GENERATOR_OUTPUT:=.}/out/Release
-  rm -rf ${OUT}/chrome-arm
-  mkdir ${OUT}/chrome-arm
-  cp -r ${OUT}/chrome \
+  cd ${NODEWEBKIT}/src/
+  OUT=out/Release
+  FILEPATH="${OUT}/nodewebkit-arm-$(date +%Y%m%d).tar.gz"
+  rm -rf ${OUT}/nodewebkit-arm
+  mkdir ${OUT}/nodewebkit-arm
+  cp -r ${OUT}/nw \
      ${OUT}/lib*.so \
-     ${OUT}/nacl_irt_*.nexe \
-     ${OUT}/nacl_ipc_*.nexe \
-     ${OUT}/nacl_helper \
-     ${OUT}/nacl_helper_bootstrap \
-     ${OUT}/chrome.pak \
-     ${OUT}/resources.pak \
-     ${OUT}/chrome_100_percent.pak \
-     ${OUT}/locales \
-     ${OUT}/chrome-arm
-  tar cfvz ${OUT}/chrome-arm.tgz -C ${OUT} chrome-arm
-  echo "chrome packaged in ${OUT}/chrome-arm/chrome-arm.tgz"
+     ${OUT}/*.pak \
+     ${OUT}/nodewebkit-arm
+  tar cfvz "${FILEPATH}" -C ${OUT} nodewebkit-arm
+  echo "NodeWebkitArm packaged in ${FILEPATH}"
 }
 
 # begin
-build
+config
+make-nodewebkit
 package

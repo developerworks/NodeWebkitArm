@@ -1,8 +1,4 @@
 #!/bin/bash
-#
-# NOTE: DOES NOT INCLUDE INSTALLING ORACLE JDK!!!!
-# THIS MUST BE DONE MANUALLY BECAUSE ORACLE SUCK.
-#
 set -o nounset
 set -o errexit
 
@@ -13,31 +9,15 @@ fi
 
 # required for build
 # install & update software
-declare -a pkg_req=(lib32z1-dev)
-packages=""
-echo "Checking for missing dependencies..."
-for pkg in "${pkg_req[@]}"; do
-        res=$(aptitude search "~i^${pkg}\$")
-        if [ "$res" = "" ]; then
-                packages="$packages $pkg"
-        else
-                echo " - $pkg"
-        fi
-done
-if [ "$packages" != "" ]; then 
-        sudo apt-get update
-        sudo apt-get install $packages -y
+if [ ! -n "${CHROMIUM_LINUX-}" ]; then
+	CHROMIUM_LINUX="${ARMTOOLS_SOURCES}/chromium-linux"
+	echo "export CHROMIUM_LINUX=${CHROMIUM_LINUX}" >> ~/.bash_profile
 fi
 
-if [ ! -n "${CHROMIUM_ANDROID-}" ]; then
-	CHROMIUM_ANROID="${ARMTOOLS_SOURCES}/chromium-android"
-	echo "export CHROMIUM_ANDROID=${CHROMIUM_ANROID}" >> ~/.bash_profile
+if [ ! -d "${CHROMIUM_LINUX}" ]; then
+	mkdir ${CHROMIUM_LINUX}
 fi
-
-if [ ! -d "${CHROMIUM_ANDROID}" ]; then
-	mkdir ${CHROMIUM_ANDROID}
-fi
-cd ${CHROMIUM_ANDROID}
+cd ${CHROMIUM_LINUX}
 
 if [ ! -e ".gclient" ]; then
 echo 'solutions = [
@@ -57,8 +37,12 @@ echo 'solutions = [
      },
      "safesync_url": "",
   },
-]
-target_os = ["android"]' > .gclient 
+]' > .gclient 
 fi
 
+# likely to fail sometimes, just re-run until complete:
 gclient sync
+
+# build dependencies
+chmod +x src/build/install-build-deps.sh
+src/build/install-build-deps.sh --no-prompt

@@ -78,8 +78,5 @@ gclient sync
 chmod +x src/build/install-build-deps.sh
 src/build/install-build-deps.sh --arm --no-prompt
 
-# may not be essential: 
-src/build/install-build-deps.sh --no-prompt
-
 # arm sysroot
 src/build/linux/install-arm-sysroot.py 

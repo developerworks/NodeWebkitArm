@@ -1,4 +1,6 @@
 #!/bin/bash
+set -o nounset
+set -o errexit
 
 if [ ! -n "${CHROMIUM_ANDROID-}" ]; then
 	echo "Environment is not set up correctly!"

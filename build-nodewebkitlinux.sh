@@ -9,6 +9,7 @@ fi
 
 ROOT_DIR="${NODEWEBKITLINUX}"
 BUILD_TARGET="nw"
+PARALLELISM=$(nproc)
 
 clean() {
 	cd ${ROOT_DIR}/src
@@ -39,16 +40,14 @@ config() {
 
 }
 
-# build without NACL support
 build() {
 	cd ${ROOT_DIR}/src/
-    gclient runhooks --force
-    ./build/gyp_chromium -Dwerror=
+        gclient runhooks --force
+        ./build/gyp_chromium -Dwerror=
 	make BUILDTYPE=Release -j ${PARALLELISM} ${BUILD_TARGET}
 }
 
 # begin
 config
-clean
+#clean
 build
-package

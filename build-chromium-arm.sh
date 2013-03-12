@@ -10,7 +10,8 @@ fi
 ROOT_DIR="${CHROMIUM_ARM}"
 BUILD_TARGET="chrome"
 OUTPUT_DIR="out/Release"
-PACKAGE_PATH="${OUTPUT_DIR}/${BUILDTARGET}"
+PACKAGE_PATH="${OUTPUT_DIR}/${BUILD_TARGET}"
+PARALLELISM=$(nproc)
 
 clean() {
 	cd ${ROOT_DIR}/src/
@@ -37,13 +38,12 @@ config() {
 		exit 1
 	fi
 
-	readonly SYSROOT="${CHROMIUM_ARM}/src/arm-sysroot/"
+	export SYSROOT="${CHROMIUM_ARM}/src/arm-sysroot/"
 	if [ ! -d ${SYSROOT} ]; then
 		echo "The arm sysroot could not be found!"
 		exit 1
 	fi
 
-	readonly PARALLELISM=$(nproc)
 	export GYP_DEFINES="target_arch=arm"
 	export CXX=arm-linux-gnueabi-g++
 	export CC=arm-linux-gnueabi-gcc
@@ -63,26 +63,7 @@ build() {
 	make BUILDTYPE=Release -j${PARALLELISM} ${BUILD_TARGET}
 }
 
-package() {
-  rm -rf ${PACKAGE_PATH}
-  mkdir ${PACKAGE_PATH}
-  cp -r ${PACKAGE_PATH} \
-     ${OUT}/lib*.so \
-     ${OUT}/nacl_irt_*.nexe \
-     ${OUT}/nacl_ipc_*.nexe \
-     ${OUT}/nacl_helper \
-     ${OUT}/nacl_helper_bootstrap \
-     ${OUT}/${BUILDTARGET}.pak \
-     ${OUT}/resources.pak \
-     ${OUT}/${BUILDTARGET}_100_percent.pak \
-     ${OUT}/locales \
-     ${OUT}/${BUILDTARGET}
-  tar cfvz ${PACKAGE_PATH}.tgz -C ${PACKAGE_PATH} ${BUILDTARGET}
-  echo "> Packaged build output into ${PACKAGE_PATH}.tgz"
-}
-
 # begin
 clean
 config
 build
-package

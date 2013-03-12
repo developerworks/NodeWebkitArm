@@ -59,5 +59,5 @@ build() {
 
 # begin
 config
-clean
+#clean
 build

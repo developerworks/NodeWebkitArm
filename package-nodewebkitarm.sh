@@ -10,7 +10,7 @@ fi
 OUTPUT_PATH="${NODEWEBKITARM}/src/out/Release"
 BUILD_TARGET="nw"
 PACKAGE_PATH="${BUILD_TARGET}-package"
-PACKAGE_FILE="${BUILD_TARGET}-$(date +%Y%m%d).tar.gz"
+PACKAGE_FILE="${BUILD_TARGET}-arm-$(date +%Y%m%d).tar.gz"
 
 clean() {
 	cd ${OUTPUT_PATH}

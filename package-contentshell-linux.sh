@@ -10,7 +10,7 @@ fi
 OUTPUT_PATH="${CHROMIUM_LINUX}/src/out/Release"
 BUILD_TARGET="content_shell"
 PACKAGE_PATH="${BUILD_TARGET}-package"
-PACKAGE_FILE="${BUILD_TARGET}-$(date +%Y%m%d).tar.gz"
+PACKAGE_FILE="${BUILD_TARGET}-linux-$(date +%Y%m%d).tar.gz"
 
 clean() {
 	cd ${OUTPUT_PATH}

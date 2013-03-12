@@ -28,19 +28,16 @@ package() {
 	fi
 
 	mkdir ${PACKAGE_PATH}
-	cd ${OUTPUT_PATH}
+
 	cp *.so ${PACKAGE_PATH}
-	#cp -r locales ${PACKAGE_PATH}
-	#cp nacl*.nexe ${PACKAGE_PATH}
-	#cp nacl_helper ${PACKAGE_PATH}
-	#cp nacl_helper_bootstrap ${PACKAGE_PATH}
 	cp *.pak ${PACKAGE_PATH}
 	cp ${BUILD_TARGET} ${PACKAGE_PATH}
 	tar -zcvf ${PACKAGE_FILE} ${PACKAGE_PATH}
-	rm -rf ${PACKAGE_PATH}
+
 	echo "> Complete: packaged files into ${PACKAGE_FILE}"
 }
 
 # do it
 clean
 package
+clean

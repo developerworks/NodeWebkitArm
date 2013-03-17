@@ -7,19 +7,26 @@ if [ ! -n "${ARMTOOLS-}" ]; then
 	exit 1
 fi
 
+ROOT_DIR=${NODEWEBKITARM}
+
+update() {
+        cd ${ROOT_DIR}
+        gclient sync
+}
+
 clean() {
-	cd ${NODEWEBKITARM}
+	cd ${ROOT_DIR}
 	rm -rf src/out/
 }
 
 config() {
 
-	if [ ! -d "${NODEWEBKITARM}" ]; then
-		echo "Could not find the node-webkit source directory!"
+	if [ ! -d "${ROOT_DIR}" ]; then
+		echo "Could not find the source directory!"
 		exit 1
 	fi
 
-	cd ${NODEWEBKITARM}
+	cd ${ROOT_DIR}
 
 	if [ ! -e ".gclient" ]; then
 		echo "Could not find the required .gclient file!"
@@ -52,12 +59,13 @@ config() {
 }
 
 build() {
-	cd ${NODEWEBKITARM}/src/
+	cd ${ROOT_DIR}/src/
 	set -x
 	make BUILDTYPE=Release -j ${PARALLELISM} nw $*
 }
 
 # begin
+update
 config
-#clean
+clean
 build

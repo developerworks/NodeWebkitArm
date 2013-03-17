@@ -7,9 +7,10 @@ if [ ! -n "${CHROMIUM_LINUX-}" ]; then
         exit 1
 fi
 
+ROOT=$(pwd)
 OUTPUT_PATH="${CHROMIUM_LINUX}/src/out/Release"
 BUILD_TARGET="content_shell"
-PACKAGE_PATH="${BUILD_TARGET}-package"
+PACKAGE_PATH="${BUILD_TARGET}-linux"
 PACKAGE_FILE="${BUILD_TARGET}-linux-$(date +%Y%m%d).tar.gz"
 
 clean() {
@@ -37,7 +38,7 @@ package() {
 	cp *.pak ${PACKAGE_PATH}
 	cp ${BUILD_TARGET} ${PACKAGE_PATH}
 	tar -zcvf ${PACKAGE_FILE} ${PACKAGE_PATH}
-
+	mv ${PACKAGE_FILE} "${ROOT}/${PACKAGE_FILE}"
 	echo "> Complete: packaged files into ${PACKAGE_FILE}"
 }
 

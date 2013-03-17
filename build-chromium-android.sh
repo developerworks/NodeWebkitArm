@@ -10,14 +10,23 @@ if [ ! -n "${CHROMIUM_ANDROID-}" ]; then
 	exit 1
 fi
 
+ROOT_DIR=${CHROMIUM_ANDROID}
+PARALELLISM=$(nproc)
+BUILD_TARGET="content_shell_apk"
+
+update() {
+	cd ${ROOT_DIR}
+	gclient sync
+}
+
 clean() {
-	cd ${CHROMIUM_ANDROID}/src
+	cd ${ROOT_DIR}/src
 	rm -rf out/
 	mkdir out/
 }
 
 build() {
-	cd ${CHROMIUM_ANDROID}/src
+	cd ${ROOT_DIR}/src
 	gclient runhooks
 	. ./build/android/envsetup.sh 
 	android_gyp
@@ -26,5 +35,6 @@ build() {
 
 
 # do it
+update
 clean
 build

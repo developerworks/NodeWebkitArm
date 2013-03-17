@@ -7,17 +7,23 @@ if [ ! -n "${CHROMIUM_LINUX-}" ]; then
 	exit 1
 fi
 
+ROOT_DIR=${CHROMIUM_LINUX}
 BUILDTARGET="chrome"
 OUT="${CHROMIUM_LINUX}/src/out/Release"
 
+update() {
+        cd ${ROOT_DIR}
+        gclient sync
+}
+
 clean() {
-	cd ${CHROMIUM_LINUX}/src
+	cd ${ROOT_DIR}/src
 	rm -rf ${OUT}
 	mkdir -p ${OUT}
 }
 
 build() {
-	cd ${CHROMIUM_LINUX}/src
+	cd ${ROOT_DIR}/src
 	export GYP_GENERATORS='ninja'
 	gclient runhooks --force
 	./build/gyp_chromium -Dwerror=
@@ -25,5 +31,6 @@ build() {
 }
 
 # do it
+update
 clean
 build

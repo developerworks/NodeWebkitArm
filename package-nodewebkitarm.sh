@@ -7,9 +7,10 @@ if [ ! -n "${NODEWEBKITARM-}" ]; then
         exit 1
 fi
 
+ROOT=$(pwd)
 OUTPUT_PATH="${NODEWEBKITARM}/src/out/Release"
 BUILD_TARGET="nw"
-PACKAGE_PATH="${BUILD_TARGET}-package"
+PACKAGE_PATH="${BUILD_TARGET}-arm"
 PACKAGE_FILE="${BUILD_TARGET}-arm-$(date +%Y%m%d).tar.gz"
 
 clean() {
@@ -33,7 +34,7 @@ package() {
 	cp *.pak ${PACKAGE_PATH}
 	cp ${BUILD_TARGET} ${PACKAGE_PATH}
 	tar -zcvf ${PACKAGE_FILE} ${PACKAGE_PATH}
-
+	mv ${PACKAGE_FILE} "${ROOT}/${PACKAGE_FILE}"
 	echo "> Complete: packaged files into ${PACKAGE_FILE}"
 }
 

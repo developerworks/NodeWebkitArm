@@ -13,6 +13,11 @@ OUTPUT_DIR="out/Release"
 PACKAGE_PATH="${OUTPUT_DIR}/${BUILD_TARGET}"
 PARALLELISM=$(nproc)
 
+update() {
+        cd ${ROOT_DIR}
+        gclient sync
+}
+
 clean() {
 	cd ${ROOT_DIR}/src/
 	rm -rf out/
@@ -52,9 +57,8 @@ config() {
 	export RANLIB=arm-linux-gnueabi-ranlib
 	export CXX_host=g++
 	export CC_host=gcc
-	export GYP_DEFINES
 
-	gclient runhooks
+	gclient runhooks --force
 }
 
 build() {
@@ -64,6 +68,7 @@ build() {
 }
 
 # begin
+update
 clean
 config
 build

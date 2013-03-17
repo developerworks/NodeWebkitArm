@@ -11,6 +11,11 @@ ROOT_DIR="${NODEWEBKITLINUX}"
 BUILD_TARGET="nw"
 PARALLELISM=$(nproc)
 
+update() {
+        cd ${ROOT_DIR}
+        gclient sync
+}
+
 clean() {
 	cd ${ROOT_DIR}/src
 	rm -rf out/
@@ -48,6 +53,7 @@ build() {
 }
 
 # begin
+update
 config
-#clean
+clean
 build
